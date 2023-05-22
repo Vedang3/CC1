@@ -1,0 +1,41 @@
+Problem Statement: 
+ 
+To develop any distributed application using Message Passing Interface (MPI). 
+ 
+Tools / Environment: 
+ 
+Java Programming Environment, JDK1.8 or higher, MPI Library (mpi.jar), MPJ Express (mpj.jar) 
+ 
+Related Theory: 
+ 
+Message passing is a popularly renowned mechanism to implement parallelism in applications; it is also called MPI. The MPI interface for Java has a technique for identifying the user and helping in lower startup overhead. It also helps in collective communication and could be executed on both shared memory and distributed systems. MPJ is a familiar Java API for MPI implementation. mpiJava is the near flexible Java binding for MPJ standards. 
+Currently developers can produce more efficient and effective parallel applications using message passing. 
+A basic prerequisite for message passing is a good communication API. Java comes with various ready-made packages for communication, notably an interface to BSD sockets, and the Remote Method Invocation (RMI) mechanism. The parallel computing world is mainly concerned with `symmetric' communication, occurring in groups of interacting peers. This symmetric model of communication is captured in the successful Message Passing Interface standard (MPI). Message-Passing Interface Basics: 
+ 
+
+
+MPJ Express is essentially a middleware that supports communication between individual processors of clusters. The programming model followed by MPJ Express is Single Program Multiple Data (SPMD). 
+
+ Designing the solution: 	 
+While designing the solution, we have considered the multi-core architecture as per shown in the diagram below. The communicator has processes as per input by the user. MPI program will execute the sequence as per the supplied processes and the number of processor cores available for the execution. 
+  
+ Implementing the solution: 	 
+ 
+1.	For implementing the MPI program in multi-core environment, we need to install MPJ express library. 
+a.	Download MPJ Express (mpj.jar) and unpack it. 
+b.	Set MPJ_HOME and PATH environment variables: 
+c.	export MPJ_HOME=/path/to/mpj/ 
+d.	export PATH=$MPJ_HOME/bin:$PATH 
+2.	Write Hello World parallel Java program and save it as HelloWorld.java (Asign2.java). 3. Compile a simple Hello World (Asign) parallel Java program 
+4. Running MPJ Express in the Multi-core Configuration. 
+ 
+ Writing the source code: 	 
+ 
+ 
+ 
+
+ 
+ 
+Conclusion: 
+ 
+There has been a large amount of interest in parallel programming using Java. mpj is an MPI binding with Java along with the support for multicore architecture so that user can develop the code on it's own laptop or desktop. This is an effort to develop and run parallel programs according to MPI standard.  

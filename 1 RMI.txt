@@ -1,0 +1,95 @@
+Problem Statement: 
+ 
+To develop any distributed application through implementing client-server communication programs based on Java RMI . 
+ 
+Tools / Environment: 
+ 
+Java Programming Environment, jdk 1.8, rmiregistry 
+ 
+Related Theory: 
+ 
+RMI provides communication between java applications that are deployed on different servers and connected remotely using objects called stub and skeleton. This communication architecture makes a distributed application seem like a group of objects communicating across a remote connection. These objects are encapsulated by exposing an interface, which helps access the private state and behavior of an object through its methods. 
+ 
+ 
+Key terminologies of RMI: 
+ 
+The following are some of the important terminologies used in a Remote Method Invocation. Remote object: This is an object in a specific JVM whose methods are exposed so they could be invoked by another program deployed on a different JVM. 
+Remote interface: This is a Java interface that defines the methods that exist in a remote object. A remote object can implement more than one remote interface to adopt multiple remote interface behaviors. 
+RMI: This is a way of invoking a remote object's methods with the help of a remote interface. It can be carried with a syntax that is similar to the local method invocation. 
+Stub: This is a Java object that acts as an entry point for the client object to route any outgoing requests. It exists on the client JVM and represents the handle to the remote object. 
+If any object invokes a method on the stub object, the stub establishes RMI by following these steps: 
+1.	It initiates a connection to the remote machine JVM. 
+2.	It marshals (write and transmit) the parameters passed to it via the remote JVM. 
+3.	It waits for a response from the remote object and unmarshals (read) the returned value or exception, then it responds to the caller with that value or exception. 
+Skeleton: This is an object that behaves like a gateway on the server side. It acts as a remote object with which the client objects interact through the stub. This means that any requests coming from the remote client are routed through it. If the skeleton receives a request, it establishes RMI through these steps: 
+1.	It reads the parameter sent to the remote method. 
+2.	It invokes the actual remote object method. 
+3.	It marshals (writes and transmits) the result back to the caller (stub). 
+The following diagram demonstrates RMI communication with stub and skeleton involved: 
+  
+ Designing the solution: 
+ 
+The essential steps that need to be followed to develop a distributed application with RMI are as follows: 
+1.	Design and implement a component that should not only be involved in the distributed application, but also the local components. 
+2.	Ensure that the components that participate in the RMI calls are accessible across networks. 3. Establish a network connection between applications that need to interact using the RMI. 
+ 
+Remote interface definition: The purpose of defining a remote interface is to declare the methods that should be available for invocation by a remote client. 
+Programming the interface instead of programming the component implementation is an essential design principle adopted by all modern Java frameworks, including Spring. In the same pattern, the definition of a remote interface takes importance in RMI design as well. 
+2.	Remote object implementation: Java allows a class to implement more than one interface at a time. This helps remote objects implement one or more remote interfaces. The remote object class may have to implement other local interfaces and methods that it is responsible for. Avoid adding complexity to this scenario, in terms of how the arguments or return parameter values of such component methods should be written. 
+3.	Remote client implementation: Client objects that interact with remote server objects can be written once the remote interfaces are carefully defined even after the remote objects are deployed. 
+ 
+Let's design a project that can sit on a server. After that different client projects interact with this project to pass the parameters and get the computation on the remote object execute and return the result to the client components. 
+ Implementing the solution: 
+Consider building an application to perform diverse mathematical operations. 
+ 
+The server receives a request from a client, processes it, and returns a result. In this example, the request specifies two numbers. The server adds these together and returns the sum. 
+1. Creating remote interface, implement remote interface, server-side and client-side program and Compile the code. 
+This application uses four source files. The first file, AddServerIntf.java, defines the remote interface that is provided by the server. It contains one method that accepts two double arguments and returns their sum. All remote interfaces must extend the Remote interface, which is part of java.rmi. Remote defines no members. Its purpose is simply to indicate that an interface uses remote methods. All remote methods can throw a RemoteException. 
+The second source file, AddServerImpl.java, implements the remote interface. The implementation of the add() method is straightforward. All remote objects must extend UnicastRemoteObject, which provides functionality that is needed to make objects available from remote machines. 
+ 
+The third source file, AddServer.java, contains the main program for the server machine. Its primary function is to update the RMI registry on that machine. This is done by using the rebind() method of the Naming class (found in java.rmi). That method associates a name with an object reference. The first argument to the rebind() method is a string that names the server as “AddServer”. Its second argument is a reference to an instance of 
+AddServerImpl. 
+ 
+The fourth source file, AddClient.java, implements the client side of this distributed application. AddClient.java requires three command-line arguments. The first is the IP address or name of the server machine. The second and third arguments are the two numbers that are to be summed. 
+ 
+The application begins by forming a string that follows the URL syntax. This URL uses the rmi protocol. The string includes the IP address or name of the server and the string “AddServer”. The program then invokes the lookup( ) method of the Naming class. This method accepts one argument, the rmi URL, and returns a reference to an object of type AddServerIntf. All remote method invocations can then be directed to this object. 
+The program continues by displaying its arguments and then invokes the remote add() method. 
+The sum is returned from this method and is then printed. 
+Use javac to compile the four source files that are created. 
+ 
+2. Generate a Stub 
+ 
+Before using client and server, the necessary stub must be generated. In the context of RMI, a stub is a Java object that resides on the client machine. Its function is to present the same interfaces as the remote server. Remote method calls initiated by the client are actually directed to the stub. The stub works with the other parts of the RMI system to formulate a request that is sent to the remote machine. 
+ 
+All of this information must be sent to the remote machine. That is, an object passed as an argument to a remote method call must be serialized and sent to the remote machine. If a response must be returned to the client, the process works in reverse. The serialization and deserialization facilities are also used if objects are returned to a client. To generate a stub the command is RMIcompiler is invoked as follows: 
+ 
+rmic AddServerImpl. 
+ 
+This command generates the file AddServerImpl_Stub.class. 
+3.	Install Files on the Client and Server Machines 
+ 
+Copy AddClient.class, AddServerImpl_Stub.class, AddServerIntf.class to a directory on the client machine. 
+Copy AddServerIntf.class, AddServerImpl.class, AddServerImpl_ Stub.class, and AddServer.class to a directory on the server machine. 
+ 
+4.	Start the RMI Registry on the Server Machine 
+ 
+Java provides a program called rmiregistry, which executes on the server machine. It maps names to object references. Start the RMI Registry from the command line, as shown here: 
+ 
+start rmiregistry 
+ 
+5.	Start the Server 
+ 
+The server code is started from the command line, as shown here: java AddServer 
+ 
+The AddServer code instantiates AddServerImpl and registers that object with the name 
+“AddServer”. 
+ 
+6.	Start the Client 
+ 
+The AddClient software requires three arguments: the name or IP address of the server machine and the two numbers that are to be summed together. You may invoke it from the command line by using one of the two formats shown here: 
+ 
+
+ Conclusion: 	 
+ 
+Remote Method Invocation (RMI) allows you to build Java applications that are distributed among several machines. Remote Method Invocation (RMI) allows a Java object that executes on one machine to invoke a method of a Java object that executes on another machine. This is an important feature, because it allows you to build distributed applications. 
+
